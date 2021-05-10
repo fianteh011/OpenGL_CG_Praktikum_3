@@ -33,19 +33,19 @@ class Geometry:
     def pyramidObject1(self):
         vertices = [
             # VerA: links vorne
-            1.0, -0.5, -0.5, 1.0, 0.0, 1.0,
+            -0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
             # VerB: rechts vorne
-            2.0, -0.5, -0.5, 0.0, 1.0, 1.0,
+            0.5, -0.5, -0.5, 0.0, 1.0, 1.0,
             # verC: links hinten
-            1.0, 0.5, -0.5, 1.0, 1.0, 0.0,
+            -0.5, 0.5, -0.5, 1.0, 1.0, 0.0,
             # VerD: rechts hinten
-            2.0, 0.5, -0.5, 1.0, 1.0, 1.0,
+            0.5, 0.5, -0.5, 1.0, 1.0, 1.0,
             # VerE: Spitze
-            1.5, 0.0, 1.0, 1.0, 1.0, 0.0
+            0.0, 0.0, 1.0, 1.0, 1.0, 0.0
         ]
 
         indices = [
-            0, 1, 2, 2, 3, 1,  # Flaeche hinen
+            0, 1, 2, 2, 3, 1,  # Flaeche hinten
             0, 1, 4,  # Flaeche vorne
             2, 3, 4,  # Flaeche hinten
             1, 3, 4,  # Flaehce rechts

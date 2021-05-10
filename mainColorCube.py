@@ -9,9 +9,10 @@ from matrix import Matrix
 from math import pi
 from OpenGL.raw.GL.VERSION.GL_2_0 import glUseProgram
 
+WIDTH, HEIGHT = 2560, 2560
 
 def main():
-    WIDTH, HEIGHT = 2560, 2560
+
 
     #### Shader aus Datei laden
     # vertex shader code einlesen
@@ -26,7 +27,8 @@ def main():
     # glfw callback functions
     def window_resize(window, width, height):
         glViewport(0, 0, width, height)
-        projection = Matrix.makePerspective(45, WIDTH / HEIGHT, 0.1, 100)
+        # projection = Matrix.makePerspective(45, WIDTH / HEIGHT, 0.1, 100)
+        projection = Matrix.makePerspective(45, width / height, 0.1, 100)
         glUniformMatrix4fv(proj_loc, 1, GL_TRUE, projection)
 
     # set the callback function for window resize
@@ -54,7 +56,7 @@ def main():
     VBO = glGenBuffers(1)
     glBindBuffer(GL_ARRAY_BUFFER, VBO)
     # glBufferData(GL_ARRAY_BUFFER, cube_vertices.nbytes, cube_vertices, GL_STATIC_DRAW)
-    # glBufferData(GL_ARRAY_BUFFER, pyramid_vertices.nbytes, pyramid_vertices, GL_STATIC_DRAW)
+    glBufferData(GL_ARRAY_BUFFER, pyramid_vertices.nbytes, pyramid_vertices, GL_STATIC_DRAW)
 
     glEnableVertexAttribArray(0)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
@@ -63,7 +65,7 @@ def main():
     EBO = glGenBuffers(1)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
     # glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube_indices.nbytes, cube_indices, GL_STATIC_DRAW)
-    # glBufferData(GL_ELEMENT_ARRAY_BUFFER, pyramid_indices, pyramid_indices, GL_STATIC_DRAW)
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, pyramid_indices.nbytes, pyramid_indices, GL_STATIC_DRAW)
 
     glEnableVertexAttribArray(1)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
@@ -75,10 +77,11 @@ def main():
     #### Transformations-Pipeline einrichten
     projection = Matrix.makePerspective(45, WIDTH / HEIGHT, 0.1, 100)
     model = Matrix.makeIdentity()
+    # model = Matrix.makeTranslation(0.75, -0.5, 0)
 
     # Drehung des Objekts
-    # model = Matrix.multiply(model, Matrix.makeRotationX(pi / 4))
-    # model = Matrix.multiply(model, Matrix.makeRotationY(pi / 3))
+    # model = Matrix.multiply(model, Matrix.makeRotationX(pi/4))
+    # model = Matrix.multiply(model, Matrix.makeRotationY(pi/3))
 
     # Pyramide
     # Spitze nach oben zeigt
@@ -90,12 +93,12 @@ def main():
     ################################ Augpunkt, eye = e    # target = t          u = up-vector
 
     # shader-Verbindung einrichten
-    model_loc = glGetUniformLocation(programRef, "model")
+    model_loc = glGetUniformLocation(programRef, "model")  #
     proj_loc = glGetUniformLocation(programRef, "projection")
     view_loc = glGetUniformLocation(programRef, "view")
 
     glUniformMatrix4fv(proj_loc, 1, GL_TRUE, projection)
-    glUniformMatrix4fv(model_loc, 1, GL_TRUE, model)
+    glUniformMatrix4fv(model_loc, 1, GL_TRUE, model)  #
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, view)
 
     #### Anwendung (application loop) starten
@@ -108,24 +111,27 @@ def main():
 
         # Wuerfel
         # Wuerfel darstellen
-        glBufferData(GL_ARRAY_BUFFER, cube_vertices.nbytes, cube_vertices, GL_STATIC_DRAW)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube_indices.nbytes, cube_indices, GL_STATIC_DRAW)
-        glDrawElements(GL_TRIANGLES, len(cube_indices), GL_UNSIGNED_INT, None)
+        # glBufferData(GL_ARRAY_BUFFER, cube_vertices.nbytes, cube_vertices, GL_STATIC_DRAW)
+        # glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube_indices.nbytes, cube_indices, GL_STATIC_DRAW)
+        # glDrawElements(GL_TRIANGLES, len(cube_indices), GL_UNSIGNED_INT, None)
 
         # Wuerfel drehen permanent um die X-Achse
-        # model = Matrix.multiply(model, Matrix.makeRotationX(pi / 5000))
-        # glUniformMatrix4fv(model_loc, 1, GL_TRUE, model)
+        # rein von der Framerate abhänigig => Quicxk and dirty
+        # model = Matrix.multiply(model, Matrix.makeRotationX(pi/500))
+        # model = Matrix.multiply(model, Matrix.makeRotationY(0))
+        # model = Matrix.multiply(model, Matrix.makeRotationZ(pi))
+        glUniformMatrix4fv(model_loc, 1, GL_TRUE, model)
 
         #########################################################
 
         # Pyramide darstellen
-        glBufferData(GL_ARRAY_BUFFER, pyramid_vertices.nbytes, pyramid_vertices, GL_STATIC_DRAW)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, pyramid_indices.nbytes, pyramid_indices, GL_STATIC_DRAW)
+        # glBufferData(GL_ARRAY_BUFFER, pyramid_vertices.nbytes, pyramid_vertices, GL_STATIC_DRAW)
+        # glBufferData(GL_ELEMENT_ARRAY_BUFFER, pyramid_indices.nbytes, pyramid_indices, GL_STATIC_DRAW)
 
         glDrawElements(GL_TRIANGLES, len(pyramid_indices), GL_UNSIGNED_INT, None)
 
         # Pyramid Drehen bzw. rotieren
-        model = Matrix.multiply(model, Matrix.makeRotationZ(pi / 500))
+        model = Matrix.multiply(model, Matrix.makeRotationZ(pi/1000))
         glUniformMatrix4fv(model_loc, 1, GL_TRUE, model)
 
         #########################################################
